@@ -1,0 +1,27 @@
+{
+  "name": "async-await-callables",
+  "version": "1.0.0",
+  "description": "safely execute multiple async callables as a unit of work then invoke callback with error/results. ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/r3wt/asyncAwaitCallables.git"
+  },
+  "keywords": [
+    "async",
+    "unit",
+    "of",
+    "work",
+    "safe",
+    "es6"
+  ],
+  "author": "Garrett Morris <stuckinabox@live.com> (https://github.com/r3wt)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/r3wt/asyncAwaitCallables/issues"
+  },
+  "homepage": "https://github.com/r3wt/asyncAwaitCallables#readme"
+}
