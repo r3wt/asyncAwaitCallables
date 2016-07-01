@@ -1,5 +1,25 @@
-### Async Await Callables.
+# Async Await Callables.
 
+# install
+
+```
+npm install --save async-await-callables
+```
+
+# signature
+
+void asyncAwaitCallables( Array, Callback[, Timeout])
+
+Array (required,Array) - Array of Functions. type is checked, exception thrown.
+Callback (required,Function) - Function. type is checked, exception thrown
+Timeout  (optional,Mixed) - Either a string or number of milliseconds. valid strings are `100ms`,`10m`,'1h`,`100MS`,`10M`,'1H`. If time cannot be parsed to millisecond value, exception is thrown.
+
+
+# implementation details
+
+- callstack insulated against thrown errors
+- zero filled array with index specific next function insures no early return. see source for details.
+- timeouts can be used to insure your callback always is invoked. timeout is per callable, not for entire work. if timeout is exceeded, timeout error is pushed into error stack.
 
 
 # basic usage
