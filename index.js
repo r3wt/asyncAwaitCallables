@@ -2,7 +2,7 @@ function timeParse(t)
 {
 	if(typeof t == 'string'){
 		var m = t.match(/^(\d+)(MS|S|M|H|ms|s|m|h)$/);
-		if(m.length == 3){
+		if(m instanceof Array && m.length == 3){
 			var a = ~~m[1],
 				b = m[2].toLowerCase(),
 				c = {
@@ -37,26 +37,29 @@ module.exports = function asyncAwaitCallables(arr,cb,timeout){
 	}
 	
 	if(!arr.length){
-		console.log('asyncAwaitCallables cannot operate on an empty array. callback invoked with undefined values.');
+		console.error('asyncAwaitCallables cannot operate on an empty array. callback invoked with undefined values.');
 		cb(undefined,undefined);
 	}
 	
-	var err = [];
-	var res = [];
-	var ret = new Array(arr.length).fill(0);
+	var err = [];//error array
+	var res = [];//result array
+	var ret = new Array(arr.length).fill(0);//use zero filled array instead of an incrementor to track progress.
+	//next is responsible for updating its index with a 1 to signify completion of its unit of work.
 	
 	if(timeout){
-		var ms = timeParse(timeout);
+		var ms = timeParse(timeout);//parse the timeout into a millisecond value.
+		
+		//the timeout could not be understood
 		if(ms == -1){
-			throw new Error('asyncAwaitCallables was unable to parse parameter `timeout` expected number or string');
+			throw new Error('asyncAwaitCallables was unable to parse parameter `timeout` with value `'+timeout.toString()+'`');
 		}
-		var tim = new Array(arr.length).fill(null);
+		var tim = new Array(arr.length).fill(null);//setup indexed timeout array of length to store timeouts.
 	}
 	
 	arr.forEach(function(v,i){
 		//provide context specific next function to insulate from race conditions
 		var next = function(e,r){
-			//prevent dupes in err/res stacks 
+			//prevent dupes in err/res/ret stacks 
 			if(ret[i] == 0){
 				
 				if(timeout){
@@ -71,10 +74,13 @@ module.exports = function asyncAwaitCallables(arr,cb,timeout){
 					res.push(r);
 				}
 				
-				ret[i] = 1;
+				ret[i] = 1;//update index to signify completion of unit of work
+				
+				//check ret stack to see if all work has returned.
 				if(ret.indexOf(0) == -1){
 					var e = err.length > 0 ? err : undefined;
 					var r = res.length > 0 ? res : undefined;
+					//all work returned, invoke callback with errors/results if they exist.
 					cb(e,r);
 				}		
 			}
